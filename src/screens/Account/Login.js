@@ -8,17 +8,19 @@ import Input from '../../components/Input'
 import Button from '../../components/Button'
 import useAuth from '../../hooks/useAuth'
 
+const auth = getAuth()
 export default function Login() {
-  const { googleSignIn, facebookSignIn } = useAuth()
+  const { googleSignIn, facebookSignIn, userSignIn } = useAuth()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
-  const loginAccount = () => {
-    const auth = getAuth()
+  const loginAccount = (e) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log(user);
+        console.log(user)
+        userSignIn(user.email, user.password)
+        e.preventDefault()
       })
       .catch((error) => {
         const errorMessage = error.message;
@@ -29,9 +31,9 @@ export default function Login() {
   return (
     <View style={{ flex: 1 }}>
       <Image
-        style={{ height: 250, width: '80%', marginTop:40, alignSelf:'center' }}
+        style={{ height: 250, width: '80%', marginTop: 40, alignSelf: 'center' }}
         source={require('../../../assets/login.jpg')}
-        resizeMood= 'cover'
+        resizeMood='cover'
       />
       <Input
         placeholder='Email'
@@ -82,6 +84,6 @@ const styles = StyleSheet.create({
   signInText: {
     fontWeight: 'bold',
     marginTop: 50,
-    alignSelf:'center'
+    alignSelf: 'center'
   }
 });

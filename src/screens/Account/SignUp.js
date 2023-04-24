@@ -5,10 +5,12 @@ import { StyleSheet } from 'react-native';
 import Text from "../../components/text/text";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
+import { showMessage } from "react-native-flash-message";
 
 
 export default function SignUp({ navigation }) {
     const [email, setEmail] = useState("")
+    const [msg, setMsg] = useState("")
     const [password, setPassword] = useState("")
     const [name, setName] = useState("")
     const [age, setAge] = useState("")
@@ -21,8 +23,11 @@ export default function SignUp({ navigation }) {
                 console.log(user);
             })
             .catch((error) => {
-                const errorMessage = error.message;
-                console.log(errorMessage);
+                setMsg(error.message);
+                showMessage({
+                    message: msg,
+                    type: "danger",
+                  });
             });
     }
 
@@ -40,10 +45,12 @@ export default function SignUp({ navigation }) {
             <Input
                 placeholder='Password'
                 onChangeText={(text) => setPassword(text)}
-                secureTextEntry />
+                secureTextEntry 
+            />
             <Input
                 placeholder='Full Name'
                 onChangeText={(text) => setName(text)}
+                require
             />
             <Input
                 placeholder='Age'
@@ -74,6 +81,6 @@ const styles = StyleSheet.create({
     signInText: {
         fontWeight: 'bold',
         marginTop: 30,
-        alignSelf:'center'
+        alignSelf: 'center'
     }
 });

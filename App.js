@@ -9,6 +9,10 @@ import { colors } from './src/theme/colors';
 import AuthProvider from './src/components/AuthProvider/AuthProvider';
 import SignUp from './src/screens/Account/SignUp';
 import Login from './src/screens/Account/Login';
+import { useEffect, useState } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import FlashMessage from "react-native-flash-message";
+
 
 const Stack = createNativeStackNavigator();
 const AppTheme = {
@@ -18,8 +22,23 @@ const AppTheme = {
     background: colors.white,
   },
 };
-const user = false
+
 export default function App() {
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    const auth = getAuth()
+    const authSubscription = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user)
+      }
+      else {
+        setUser(null)
+      }
+    })
+    return authSubscription;
+  }, [])
+
   const [loaded] = useFonts({
     'Antonio-Medium': require('./assets/fonts/Antonio-Medium.ttf'),
     'Spartan-Bold': require('./assets/fonts/Spartan-Bold.ttf'),
@@ -29,6 +48,7 @@ export default function App() {
   if (!loaded) {
     return <Text>Font is loading</Text>;
   }
+
 
   return (
     <AuthProvider>
@@ -50,6 +70,7 @@ export default function App() {
           }
         </Stack.Navigator>
       </NavigationContainer>
+      <FlashMessage position="top" />
       <StatusBar />
     </AuthProvider>
   );
