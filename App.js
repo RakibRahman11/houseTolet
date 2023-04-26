@@ -3,7 +3,6 @@ import { useFonts } from 'expo-font'
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './src/screens/Home';
-import Details from './src/screens/Details';
 import Text from './src/components/text/text';
 import { colors } from './src/theme/colors';
 import AuthProvider from './src/components/AuthProvider/AuthProvider';
@@ -11,7 +10,8 @@ import SignUp from './src/screens/Account/SignUp';
 import Login from './src/screens/Account/Login';
 import { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import FlashMessage from "react-native-flash-message";
+import AllToLet from './src/screens/HomeInformation/AllToLet';
+import ToLetPost from './src/screens/HomeInformation/ToLetPost';
 
 
 const Stack = createNativeStackNavigator();
@@ -22,9 +22,10 @@ const AppTheme = {
     background: colors.white,
   },
 };
+const user = 'True'
 
 export default function App() {
-  const [user, setUser] = useState(null)
+  // const [user, setUser] = useState(null)
 
   useEffect(() => {
     const auth = getAuth()
@@ -56,8 +57,9 @@ export default function App() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {user ? (
             <>
+              <Stack.Screen name="ToLetPost" component={ToLetPost} />
               <Stack.Screen name="Home" component={Home} />
-              <Stack.Screen name="Details" component={Details} />
+              <Stack.Screen name="AllToLet" component={AllToLet} />
             </>
           )
             :
@@ -70,7 +72,6 @@ export default function App() {
           }
         </Stack.Navigator>
       </NavigationContainer>
-      <FlashMessage position="top" />
       <StatusBar />
     </AuthProvider>
   );

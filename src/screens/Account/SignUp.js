@@ -5,7 +5,6 @@ import { StyleSheet } from 'react-native';
 import Text from "../../components/text/text";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
-import { showMessage } from "react-native-flash-message";
 
 
 export default function SignUp({ navigation }) {
