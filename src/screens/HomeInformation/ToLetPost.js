@@ -1,5 +1,5 @@
 import { View, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import Button from '../../components/Button'
 import { useNavigation } from '@react-navigation/native'
 import { Pressable } from 'react-native'
@@ -8,13 +8,23 @@ import { StyleSheet } from 'react-native'
 import Text from '../../components/text/text'
 import SelectDropdown from 'react-native-select-dropdown'
 import { CheckBox } from 'react-native-elements';
+import { Container } from '@mui/material'
 
 
 const genderOptions = ['Male', 'Female']
 
 
 export default function ToLetPost() {
-    const [isOpen, setIsOpen] = useState(false);
+    const citiesDropdownRef = useRef();
+    const navigation = useNavigation()
+    const [isOpen, setIsOpen] = useState([]);
+    // const [offer, setOffers] = useState([]);
+    const [prefBatch, setPrefBatch] = useState(null);
+    const [name, setName] = useState("")
+    const [contact, setContact] = useState("")
+    const [gender, setGender] = useState(null)
+    const [fare, setFare] = useState("")
+
     const [options, setOptions] = useState([
         { label: 'Attached Bathroom', checked: false },
         { label: 'Available Bus Seat', checked: false },
@@ -24,31 +34,33 @@ export default function ToLetPost() {
         { label: 'Supply Water', checked: false },
         { label: 'Fridge Available', checked: false }
     ]);
-    const [selectedItem, setSelectedItem] = useState(null);
+
     const places = ['Sonapur', 'Maijdee', 'Housing', 'Chowrasta', 'White Hall', 'Bus Terminal', 'Masterpara', 'Super Market', 'Hospital Road'];
     const batches = ['12th Batch', '13th Batch', '14th Batch', '15th Batch', '16th Batch', '17th Batch'];
+
 
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
     };
 
     const handleSelectItem = (batch) => {
-        setSelectedItem(batch);
+        setPrefBatch(batch);
         setIsOpen(false);
     };
 
-    const handleCheckboxChange = (index) => {
+    const handleCheckboxChange = (option, index) => {
+        const fact = !option.checked
+        console.log(fact, index);
         const newOptions = [...options];
-        newOptions[index].checked = !newOptions[index].checked;
+        newOptions[index].checked = fact;
         setOptions(newOptions);
     };
-    const [gender, setGender] = useState(null)
-    const [name, setName] = useState("")
-    const [contact, setContact] = useState("")
-
-    const navigation = useNavigation()
+    const messDetails = () => {
+        const info = { name, contact, gender, prefBatch, fare, options }
+        console.log(info);
+    }
     return (
-        <View>
+        <Container>
             <Button
                 title='Back'
                 customStyles={{ width: 80, borderRadius: 5, padding: 5 }}
@@ -57,11 +69,12 @@ export default function ToLetPost() {
                 <Input
                     placeholder='Full Name'
                     onChangeText={(text) => setName(text)}
-                    required
+                    require
                 />
                 <Input
                     placeholder='Phone Number'
-                    keyboardType='numeric'
+                    secureTextEntry
+                    keyboardType='phone-pad'
                     onChangeText={(text) => setContact(text)}
                 />
 
@@ -84,10 +97,10 @@ export default function ToLetPost() {
                         )
                     })
                 }
-                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginLeft: '15%' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginLeft: '15%', marginBottom: 10 }}>
                     <View>
                         <TouchableOpacity onPress={toggleDropdown}>
-                            <Text style={styles.batchDrp}>{selectedItem || 'Preferred Batch'}</Text>
+                            <Text style={styles.batchDrp}>{prefBatch || 'Preferred Batch'}</Text>
                         </TouchableOpacity>
                         {isOpen && (
                             <View>
@@ -103,14 +116,14 @@ export default function ToLetPost() {
                         <SelectDropdown
                             data={places}
                             onSelect={(selectedItem, index) => {
-                                console.log(selectedItem, index);
+                                setIsOpen(selectedItem);
                             }}
                             defaultButtonText={'Location'}
                             buttonTextAfterSelection={(selectedItem, index) => {
-                                return selectedItem;
+                                setIsOpen(selectedItem);
                             }}
                             rowTextForSelection={(item, index) => {
-                                return item;
+                                setIsOpen(item);
                             }}
                             buttonStyle={styles.dropdown1BtnStyle}
                             buttonTextStyle={styles.dropdown1BtnTxtStyle}
@@ -131,13 +144,23 @@ export default function ToLetPost() {
                             key={index}
                             title={option.label}
                             checked={option.checked}
-                            containerStyle={{ width: '40%', flexDirection:'column',  }}
-                            onPress={() => handleCheckboxChange(index)}
+                            containerStyle={{ width: '70%', flexDirection: 'column', }}
+                            onPress={() => handleCheckboxChange(option, index)}
                         />
                     ))}
                 </View>
+                <Text preset='BOLD_BASE' style={{ marginLeft: '15%', paddingTop: 10, marginRight: '5%' }}>Seat fare <small>(Including seat, gas, water, wifi, servant, electricity and others)</small></Text>
+                <Input
+                    placeholder='Amount'
+                    onChangeText={(fare) => setFare(fare)}
+                    required
+                />
+                <Button
+                    title={'NEED MEMBER'}
+                    customStyles={{ alignSelf: 'center', backgroundColor:'#ccff99' }}
+                    onPress={messDetails} />
             </View>
-        </View>
+        </Container>
     )
 }
 
@@ -194,12 +217,12 @@ const styles = StyleSheet.create({
     dropdown1RowStyle: { backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5' },
     dropdown1RowTxtStyle: { color: '#444', textAlign: 'left' },
     container: {
-        padding: 30,
+        marginLeft: '15%'
     },
     question: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 5, 
+        marginBottom: 5,
         flexDirection: 'row',
         alignItems: 'flex-start',
         justifyContent: 'flex-start',

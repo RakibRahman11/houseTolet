@@ -1,7 +1,7 @@
 import { StyleSheet, TextInput } from 'react-native'
 import React from 'react'
 
-export default function Input({ secureTextEntry, placeholder, onChangeText, multiline }) {
+export default function Input({ secureTextEntry, placeholder, onChangeText, multiline, keyboardType }) {
   return (
     <TextInput
       placeholder={placeholder}
@@ -9,6 +9,7 @@ export default function Input({ secureTextEntry, placeholder, onChangeText, mult
       secureTextEntry={secureTextEntry}
       onChangeText={onChangeText}
       multiline={multiline}
+      keyboardType={keyboardType}
     />
   )
 }
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderWidth: 1,
     borderColor: '#ccc',
-    marginVertical: 10,
+    marginVertical: 15,
     padding: 10
   }
 })
